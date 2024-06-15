@@ -1,48 +1,77 @@
-import streamlit as st
+        
+   
+from flask import Flask, render_template, request
 import pickle
 import numpy as np
-# Load the model
-model = pickle.load(open('GBRmodel.pkl', 'rb'))
-st.title("California House Price Prediction")
-# Create input fields for the user
-longitude = st.number_input("Longitude")
-latitude = st.number_input("Latitude")
-housing_median_age = st.number_input("Housing Median Age")
-total_rooms = st.number_input("Total Rooms")
-total_bedrooms = st.number_input("Total Bedrooms")
-population = st.number_input("Population")
-households = st.number_input("Households")
-median_income = st.number_input("Median Income")
-ocean_proximity_OCEAN=st.number_input("ocean_proximity_OCEAN")
-ocean_proximity_INLAND=st.number_input("ocean_proximity_INLAND")
-ocean_proximity_ISLAND=st.number_input("ocean_proximity_ISLAND")
-ocean_proximity_NEARBAY=st.number_input("ocean_proximity_NEARBAY")
-ocean_proximity_NEAROCEAN=st.number_input("ocean_proximity_NEAROCEAN")
-   
-def predict_house_price():
-    # Convert input values to a numpy array
-    input_values = np.array([
-        longitude,
-        latitude,
-        housing_median_age,
-        total_rooms,
-        total_bedrooms,
-        population,
-        households,
-        median_income,
-        ocean_proximity_OCEAN,
-        ocean_proximity_INLAND,
-        ocean_proximity_ISLAND,
-        ocean_proximity_NEARBAY,
-        ocean_proximity_NEAROCEAN
-          ])
-    
-    result = model.predict(input_values.reshape(1, -1))[0]
-    # Format the result
-    output = "${:.2f}".format(result)
-    return output
+import joblib
+from joblib import load
+app = Flask(__name__)
 
-# Create a button to trigger the prediction
-if st.button("Predict"):
-    result = predict_house_price()
-    st.write("Predicted House Price: ", result)
+#model = pickle.load(open('model.pkl', 'rb'))
+model = joblib.load('model.joblib')
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+
+@app.route('/pred',methods=['POST','GET'])
+def predict_house_price():
+
+
+    longitude = float(request.form.get('longitude'))
+
+
+
+    latitude =float(request.form.get('latitude'))
+
+
+    housing_median_age=int(request.form.get('housing_median_age'))
+
+
+    total_rooms=float(request.form.get('total_rooms'))
+
+
+    total_bedrooms=float(request.form.get('total_bedrooms'))
+
+
+    population=float(request.form.get('population'))
+
+
+    households =float(request.form.get('households'))
+
+
+    median_income=float(request.form.get('median_income'))
+
+
+
+    ocean_proximity_OCEAN=int(request.form.get('ocean_proximity_OCEAN'))
+
+
+
+    ocean_proximity_INLAND=int(request.form.get('ocean_proximity_INLAND'))
+
+
+    ocean_proximity_ISLAND=int(request.form.get('ocean_proximity_ISLAND'))
+    
+        
+    ocean_proximity_NEARBAY=int(request.form.get('ocean_proximity_NEARBAY'))
+        
+    ocean_proximity_NEAROCEAN=int(request.form.get('ocean_proximity_NEAROCEAN'))
+
+    result = model.predict(np.array([[longitude,latitude,housing_median_age,total_rooms,total_bedrooms,population,households,median_income,ocean_proximity_OCEAN,ocean_proximity_INLAND,ocean_proximity_ISLAND,ocean_proximity_NEARBAY,ocean_proximity_NEAROCEAN]]))
+    result=str(result)
+    output = result.strip("[]")
+    output = "${:.2f}".format(float(output))
+
+    return render_template('result.html', result=output)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
+    
+
