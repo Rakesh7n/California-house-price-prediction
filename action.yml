@@ -1,29 +1,44 @@
-
-# File: .github/workflows/workflow.yml
-
-on: push
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-    # checkout the repo
-    - name: 'Checkout Github Action' 
-      uses: actions/checkout@master
-    
-    - name: Setup Node 10.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-    - name: 'npm install, build, and test'
-      run: |
-        npm install
-        npm run build --if-present
-        npm run test --if-present
-       
-    - name: 'Run Azure webapp deploy action using publish profile credentials'
-      uses: azure/webapps-deploy@v2
-      with: 
-        app-name: node-rn
-        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
-        
+# Login to Azure subscription
+name: 'Azure Login'
+description: 'Authenticate to Azure and run your Azure CLI or Azure PowerShell based actions or scripts.'
+inputs:
+  creds:
+    description: 'Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS'
+    required: false
+  client-id:
+    description: 'ClientId of the Azure Service principal created.'
+    required: false
+  tenant-id:
+    description: 'TenantId of the Azure Service principal created.'
+    required: false
+  subscription-id:
+    description: '1c12f3fd-09be-4e89-95d2-7b7172ab94ae'
+    required: false
+  enable-AzPSSession:
+    description: 'Set this value to true to enable Azure PowerShell Login in addition to Azure CLI login'
+    required: false
+    default: false
+  environment:
+    description: 'Name of the environment. Supported values are azurecloud, azurestack, azureusgovernment, azurechinacloud, azuregermancloud. Default being azurecloud'
+    required: false
+    default: azurecloud
+  allow-no-subscriptions:
+    description: 'Set this value to true to enable support for accessing tenants without subscriptions'
+    required: false
+    default: false
+  audience:
+    description: 'Provide audience field for access-token. Default value is api://AzureADTokenExchange'
+    required: false
+    default: 'api://AzureADTokenExchange'
+  auth-type:
+    description: 'The type of authentication. Supported values are SERVICE_PRINCIPAL, IDENTITY. Default value is SERVICE_PRINCIPAL'
+    required: false
+    default: 'SERVICE_PRINCIPAL'
+branding:
+  icon: 'login.svg'
+  color: 'blue'
+runs:
+  using: 'node20'
+  pre: 'lib/cleanup/index.js'
+  main: 'lib/main/index.js'
+  post: 'lib/cleanup/index.js'
