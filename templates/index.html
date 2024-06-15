@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>California House Price Predictor</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #f2f2f2, #3498db);
+            background-size: 100% 300px;
+            background-position: 0% 100%;
+            transition: background-position 0.5s;
+        }
+        form {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>California House Price Predictor</h1>
+    <form method="post" action="/pred">
+        <label>longitude</label><br>
+        <input type="text" name="longitude"><br><br>
+
+        <label>latitude</label><br>
+        <input type="text" name="latitude"><br><br>
+
+        <label>housing_median_age</label><br>
+        <input type="text" name="housing_median_age"><br><br>
+
+        <label>total_rooms</label><br>
+        <input type="text" name="total_rooms"><br><br>
+
+        <label>total_bedrooms</label><br>
+        <input type="text" name="total_bedrooms"><br><br>
+
+        <label>population</label><br>
+        <input type="text" name="population"><br><br>
+
+        <label>households</label><br>
+        <input type="text" name="households"><br><br>
+
+        <label>median_income</label><br>
+        <input type="text" name="median_income"><br><br>
+
+        <label>ocean_proximity_1_h_ocean</label><br>
+        <input type="text" name="ocean_proximity_OCEAN"><br><br>
+
+        <label>ocean_proximity_inland</label><br>
+        <input type="text" name="ocean_proximity_INLAND"><br><br>
+
+        <label>ocean_proximity_island</label><br>
+        <input type="text" name="ocean_proximity_ISLAND"><br><br>
+
+        <label>ocean_proximity_near bay</label><br>
+        <input type="text" name="ocean_proximity_NEARBAY"><br><br>
+
+        <label>ocean_proximity_near ocean</label><br>
+        <input type="text" name="ocean_proximity_NEAROCEAN"><br><br>
+
+        <input type="submit" value="Predict"><br><br>
+    </form>
+</body>
+</html>
